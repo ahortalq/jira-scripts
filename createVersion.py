@@ -15,8 +15,6 @@ b = ("soporte", "formulario", "configuracion", "acceso", "consulta", "edicion", 
 c = ("frontal", "back", "GUI", "trazas", "monitorizacion", "performance", "crontab")
 d = ("de Wordpress", "de Redis", "del balanceador", "de la base de datos", "de WebSphere", "de shell-scripts", "de WebLogic", "de Dynatrace")
 l = [a, b, c, d]
-
-# Generador de Componentes
 componentsList = ["db", "redis", "tutorial", "result", "vote", "worker"]
 
 jira = JIRA("http://localhost:8082", basic_auth=('jcla', 'jcla'))
@@ -62,24 +60,30 @@ for myComponent in gettingComponentes(projectKey):
 def getIssueDescription():
     return " ".join([random.choice(i) for i in l])
 
+# Obtener array de componentes
+def getComponents():
+    numberOfComponents = random.sample([1, 1, 2], 1)[0]
+    myComponents = random.sample(["db", "redis", "tutorial", "result", "vote", "worker"], numberOfComponents)
+    arrayComponents = []
+    for myComponent in myComponents:
+        arrayComponents = arrayComponents + [{"name": myComponent}]
+    return arrayComponents
+
 # Creacion de issues
-for i in range(5):
+for i in range(50):
+    text = getIssueDescription()
+    components = getComponents()
     fields = {
             "project": {
                 "key": "ELQ"
             },
-            "summary": getIssueDescription(),
-            "description": getIssueDescription(),
+            "summary": text,
+            "description": text,
             "issuetype": {
                 "name": "Nueva función"
             },
-            "fixVersions": [{"name": "20.10"}],
-            "components": [{"name": "redis"}, {"name": "vote"}],
+            "fixVersions": [{"name": "20.04"}],
+            "components": components,
         }
-    print("Creando issue = {0}".format(i))
+    print("components = {0}".format(components))
     createIssues and jira.create_issue(fields=fields)
-
-
-
-
-# print(random.sample(componentsList, random.choice(range(1, 3))))
